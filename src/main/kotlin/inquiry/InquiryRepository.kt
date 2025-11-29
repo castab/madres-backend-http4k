@@ -23,18 +23,17 @@ class InquiryRepository(
     VALUES (
         :name, :emailAddress, :phoneNumber, :guestCount,
         :selections::jsonb, :otherDetails, :userHash
-    )
-    RETURNING id;
+    );
     """.trimIndent()
-    fun insertNewInquiry(newInquiry: NewInquiry): UUID {
-        return jdbi.inTransaction<UUID, Exception> { handle ->
+    fun insertNewInquiry(newInquiry: NewInquiry) {
+        return jdbi.inTransaction<Unit, Exception> { handle ->
             val exists = handle.createQuery(existsStatement)
                 .bind("userHash", newInquiry.userHash)
                 .mapTo(Boolean::class.java)
                 .firstOrNull() ?: false
             if (exists) throw DuplicateRequestException("User already has an entry waiting to be reviewed")
             handle
-                .createQuery(insertStatement)
+                .createUpdate(insertStatement)
                 .bind("userHash", newInquiry.userHash)
                 .bind("name", newInquiry.name)
                 .bind("emailAddress", newInquiry.emailAddress)
@@ -42,8 +41,7 @@ class InquiryRepository(
                 .bind("guestCount", newInquiry.guestCount)
                 .bind("selections", objectMapper.writeValueAsString(newInquiry.selections))
                 .bind("otherDetails", newInquiry.otherDetails)
-                .mapTo(UUID::class.java)
-                .first()
+                .execute()
         }
     }
 

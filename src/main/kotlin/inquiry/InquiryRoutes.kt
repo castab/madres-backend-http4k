@@ -15,12 +15,11 @@ import java.util.UUID
 fun inquiryRoutes(repository: InquiryRepository): RoutingHttpHandler {
     val newInquiryLens = Body.auto<NewInquiry>().toLens()
     val existingInquiryLens = Body.auto<ExistingInquiry>().toLens()
-    val inquiryIdLens = Body.auto<UUID>().toLens()
     return routes(
         "/inquiry/new" bind Method.POST to { request ->
             val new = newInquiryLens(request)
-            val id = repository.insertNewInquiry(new)
-            Response(Status.CREATED).with(inquiryIdLens of id)
+            repository.insertNewInquiry(new)
+            Response(Status.CREATED)
         },
         "/inquiry/{inquiry_id}" bind Method.GET to handler@{ request ->
             val inquiryIdString = request.path("inquiry_id")
