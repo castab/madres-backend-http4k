@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory
 fun main() {
     val log = LoggerFactory.getLogger("Madres Backend")
     val config = ConfigLoaderBuilder.default()
-        .addSource(PropertySource.resource("/application.conf"))
+        .addSource(PropertySource.resource("/application.conf", true))
         .addSource(PropertySource.resource("/application-overrides.conf"))
         .addSource(PropertySource.environment())
         .build()
