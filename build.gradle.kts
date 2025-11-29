@@ -5,7 +5,7 @@ plugins {
 }
 
 application {
-    mainClass.set("maders.backend.MainKt")
+    mainClass.set("madres.backend.MainKt")
 }
 
 group = "madres.backend"
