@@ -37,6 +37,7 @@ dependencies {
 
     // Logging
     implementation("ch.qos.logback:logback-classic:1.5.21")
+    implementation("io.github.oshai:kotlin-logging-jvm:7.0.13")
 
     // Jackson data type
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.20.1")

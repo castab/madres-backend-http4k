@@ -4,6 +4,7 @@ import com.sksamuel.hoplite.ConfigLoaderBuilder
 import com.sksamuel.hoplite.PropertySource
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
+import io.github.oshai.kotlinlogging.KotlinLogging
 import madres.backend.health.healthRoutes
 import madres.backend.inquiry.InquiryRepository
 import madres.backend.inquiry.inquiryRoutes
@@ -14,10 +15,9 @@ import org.http4k.routing.routes
 import org.http4k.server.Netty
 import org.http4k.server.asServer
 import org.jdbi.v3.core.Jdbi
-import org.slf4j.LoggerFactory
 
 fun main() {
-    val log = LoggerFactory.getLogger("Madres Backend")
+    val log = KotlinLogging.logger("Madres Backend")
     val config = ConfigLoaderBuilder.default()
         .addSource(PropertySource.resource("/application.conf", true))
         .addSource(PropertySource.resource("/application-overrides.conf"))
@@ -49,10 +49,10 @@ fun main() {
             inquiryRoutes(inquiryRepository)
         )
         if (config.auth?.token.isNullOrBlank()) {
-            log.warn("No auth.token configured - authentication is DISABLED. This should not be used in production!")
+            log.warn{"No auth.token configured - authentication is DISABLED. This should not be used in production!"}
             routes
         } else {
-            log.info("Authentication enabled for protected routes")
+            log.info{"Authentication enabled for protected routes"}
             requireAuth(config.auth.token).then(routes)
         }
     }
@@ -70,11 +70,11 @@ fun main() {
         log.info("Shutdown signal received, stopping server gracefully...")
         try {
             server.stop()
-            log.info("Server stopped")
+            log.info{"Server stopped"}
             ds.close()
-            log.info("Database connections closed")
+            log.info{"Database connections closed"}
         } catch (e: Exception) {
-            log.error("Error during shutdown", e)
+            log.error(e){"Error during shutdown"}
         }
     })
     Thread.currentThread().join()
