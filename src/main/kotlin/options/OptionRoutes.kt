@@ -20,7 +20,7 @@ fun menuOptionRoutes(): RoutingHttpHandler {
         val description: String
     )
 
-    val menuOptionLens = Body.auto<List<Option>>().toLens()
+    val optionsLens = Body.auto<List<Option>>().toLens()
     val cacheFilter = CachingFilters.CacheResponse.MaxAge(
         maxAge = Duration.ofHours(1)
     )
@@ -29,7 +29,7 @@ fun menuOptionRoutes(): RoutingHttpHandler {
         val options = entries.map {
             Option(it.name, it.display, it.description)
         }
-        return Response(Status.OK).with(menuOptionLens of options)
+        return Response(Status.OK).with(optionsLens of options)
     }
 
     return routes(
