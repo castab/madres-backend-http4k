@@ -17,7 +17,12 @@ data class NewInquiry(
     val selections: SelectedOptions,
     val otherDetails: String,
 ) {
-    val userHash = "$name/$emailAddress/$phoneNumber".hashCode()
+    val userHash = run {
+        val name = name.lowercase().trim()
+        val emailAddress = emailAddress.lowercase().trim()
+        val phoneNumber = phoneNumber.filter { it.isDigit() }
+        "$name/$emailAddress/$phoneNumber".hashCode()
+    }
     data class SelectedOptions(
         val entrees: EnumSet<EntreeOption>,
         val beverages: EnumSet<BeverageOption>,

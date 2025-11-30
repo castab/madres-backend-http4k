@@ -64,8 +64,10 @@ class InquiryRepository(
             guestCount = rs.getInt("guest_count"),
             selections = objectMapper.readValue(rs.getString("selections")),
             otherDetails = rs.getString("other_details"),
-            acknowledgementSent = rs.getBoolean("acknowledgement_sent"),
-            hasBeenReviewed = rs.getBoolean("has_been_reviewed"),
+            acknowledgedTs = rs.getTimestamp("acknowledged_ts")?.toInstant(),
+            acknowledged = rs.getBoolean("acknowledged"),
+            reviewedTs = rs.getTimestamp("reviewed_ts")?.toInstant(),
+            reviewed = rs.getBoolean("reviewed"),
             createdTs = rs.getTimestamp("created_ts").toInstant(),
             updatedTs = rs.getTimestamp("updated_ts").toInstant()
         )

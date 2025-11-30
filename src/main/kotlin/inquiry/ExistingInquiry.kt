@@ -14,8 +14,10 @@ data class ExistingInquiry(
     val guestCount: Int,
     val selections: Map<String, List<String>>,
     val otherDetails: String,
-    val acknowledgementSent: Boolean,
-    val hasBeenReviewed: Boolean,
+    val acknowledgedTs: Instant?,
+    val acknowledged: Boolean,
+    val reviewedTs: Instant?,
+    val reviewed: Boolean,
     val createdTs: Instant,
     val updatedTs: Instant,
 )
