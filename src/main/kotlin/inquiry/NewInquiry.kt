@@ -10,23 +10,25 @@ import java.util.EnumSet
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
 data class NewInquiry(
-    val name: String,
-    val emailAddress: String,
-    val phoneNumber: String,
-    val guestCount: Int,
-    val selections: SelectedOptions,
-    val otherDetails: String,
+  val name: String,
+  val emailAddress: String,
+  val phoneNumber: String,
+  val guestCount: Int,
+  val selections: SelectedOptions,
+  val otherDetails: String,
 ) {
-    val userHash = run {
-        val name = name.lowercase().trim()
-        val emailAddress = emailAddress.lowercase().trim()
-        val phoneNumber = phoneNumber.filter { it.isDigit() }
-        "$name/$emailAddress/$phoneNumber".hashCode()
+  val userHash =
+    run {
+      val name = name.lowercase().trim()
+      val emailAddress = emailAddress.lowercase().trim()
+      val phoneNumber = phoneNumber.filter { it.isDigit() }
+      "$name/$emailAddress/$phoneNumber".hashCode()
     }
-    data class SelectedOptions(
-        val entrees: EnumSet<EntreeOption>,
-        val beverages: EnumSet<BeverageOption>,
-        val appetizers: EnumSet<AppetizerOption>,
-        val modifiers: EnumSet<ModifierOption>
-    )
+
+  data class SelectedOptions(
+    val entrees: EnumSet<EntreeOption>,
+    val beverages: EnumSet<BeverageOption>,
+    val appetizers: EnumSet<AppetizerOption>,
+    val modifiers: EnumSet<ModifierOption>,
+  )
 }

@@ -1,6 +1,6 @@
 package madres.backend.options
 
 interface Option {
-    val display: String
-    val description: String
+  val display: String
+  val description: String
 }

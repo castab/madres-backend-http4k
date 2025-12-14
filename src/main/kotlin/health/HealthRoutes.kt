@@ -7,10 +7,12 @@ import org.http4k.routing.bind
 import org.http4k.routing.routes
 
 fun healthRoutes(): RoutingHttpHandler {
-    data class HealthStatus(val status: String)
-    return routes(
-        "/health" bind Method.GET to {
-            HealthStatus("OK").toJsonResponse()
-        }
-    )
+  data class HealthStatus(
+    val status: String,
+  )
+  return routes(
+    "/health" bind Method.GET to {
+      HealthStatus("OK").toJsonResponse()
+    },
+  )
 }

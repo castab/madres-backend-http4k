@@ -1,6 +1,7 @@
 plugins {
     kotlin("jvm") version "2.2.21"
     id("com.gradleup.shadow") version "9.2.2"
+    id("com.diffplug.spotless") version "8.1.0"
     application
 }
 
@@ -56,4 +57,18 @@ tasks.shadowJar {
 
 kotlin {
     jvmToolchain(21)
+}
+
+configure<com.diffplug.gradle.spotless.SpotlessExtension> {
+    kotlin {
+        ktlint()
+            .editorConfigOverride(
+                mapOf(
+                    "indent_size" to 2,
+                ),
+            )
+    }
+    kotlinGradle {
+        ktlint()
+    }
 }
