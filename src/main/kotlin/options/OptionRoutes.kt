@@ -1,13 +1,10 @@
 package madres.backend.options
 
-import org.http4k.core.Body
+import madres.backend.common.toJsonResponse
 import org.http4k.core.Method
 import org.http4k.core.Response
-import org.http4k.core.Status
 import org.http4k.core.then
-import org.http4k.core.with
 import org.http4k.filter.CachingFilters
-import org.http4k.format.Jackson.auto
 import org.http4k.routing.RoutingHttpHandler
 import org.http4k.routing.bind
 import org.http4k.routing.routes
@@ -20,16 +17,14 @@ fun menuOptionRoutes(): RoutingHttpHandler {
         val description: String
     )
 
-    val optionsLens = Body.auto<List<Option>>().toLens()
     val cacheFilter = CachingFilters.CacheResponse.MaxAge(
         maxAge = Duration.ofHours(1)
     )
 
     fun <T> handleOptions(entries: Array<T>): Response where T : Enum<T>, T : madres.backend.options.Option {
-        val options = entries.map {
+        return entries.map {
             Option(it.name, it.display, it.description)
-        }
-        return Response(Status.OK).with(optionsLens of options)
+        }.toJsonResponse()
     }
 
     return routes(

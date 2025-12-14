@@ -1,23 +1,19 @@
 package madres.backend.inquiry
 
-import org.http4k.core.Body
+import com.fasterxml.jackson.module.kotlin.readValue
+import madres.backend.common.objectMapper
+import madres.backend.common.toJsonResponse
 import org.http4k.core.Method
 import org.http4k.core.Response
 import org.http4k.core.Status
-import org.http4k.core.with
-import org.http4k.format.Jackson.auto
-import org.http4k.routing.RoutingHttpHandler
 import org.http4k.routing.bind
 import org.http4k.routing.path
 import org.http4k.routing.routes
 import java.util.UUID
 
-fun inquiryRoutes(repository: InquiryRepository): RoutingHttpHandler {
-    val newInquiryLens = Body.auto<NewInquiry>().toLens()
-    val existingInquiryLens = Body.auto<ExistingInquiry>().toLens()
-    return routes(
+fun inquiryRoutes(repository: InquiryRepository) = routes(
         "/inquiry/new" bind Method.POST to { request ->
-            val new = newInquiryLens(request)
+            val new = objectMapper.readValue<NewInquiry>(request.bodyString())
             repository.insertNewInquiry(new)
             Response(Status.CREATED)
         },
@@ -31,8 +27,7 @@ fun inquiryRoutes(repository: InquiryRepository): RoutingHttpHandler {
             val inquiry = repository.getInquiryById(inquiryId)
             when {
                 inquiry == null -> Response(Status.NOT_FOUND)
-                else -> Response(Status.OK).with(existingInquiryLens of inquiry)
+                else -> inquiry.toJsonResponse()
             }
         }
     )
-}

@@ -1,15 +1,16 @@
 package madres.backend.health
 
-import org.http4k.core.*
-import org.http4k.format.Jackson.auto
-import org.http4k.routing.*
+import madres.backend.common.toJsonResponse
+import org.http4k.core.Method
+import org.http4k.routing.RoutingHttpHandler
+import org.http4k.routing.bind
+import org.http4k.routing.routes
 
 fun healthRoutes(): RoutingHttpHandler {
-    data class HealthLens(val status: String)
-    val healthLens = Body.auto<HealthLens>().toLens()
+    data class HealthStatus(val status: String)
     return routes(
         "/health" bind Method.GET to {
-            Response(Status.OK).with(healthLens of HealthLens("OK"))
+            HealthStatus("OK").toJsonResponse()
         }
     )
 }

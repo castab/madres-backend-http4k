@@ -64,10 +64,10 @@ fun main() {
 
     val server = allRoutes.asServer(Netty(config.server.port)).start()
 
-    log.info("Server running on port ${config.server.port}")
+    log.info{"Server running on port ${config.server.port}"}
 
     Runtime.getRuntime().addShutdownHook(Thread {
-        log.info("Shutdown signal received, stopping server gracefully...")
+        log.info{"Shutdown signal received, stopping server gracefully..."}
         try {
             server.stop()
             log.info{"Server stopped"}
