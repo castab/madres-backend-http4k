@@ -17,21 +17,19 @@ class OptionRepository(
     """.trimIndent()
 
   fun insertNewOption(newOption: Option) {
-    jdbi.withHandle<Option, Exception> { handle ->
-      val type = newOption::class.simpleName!!
-      handle.createQuery(insertStatement)
-        .bind("type", type)
+    jdbi.withHandle<Unit, Exception> { handle ->
+      handle.createUpdate(insertStatement)
+        .bind("type", newOption.type)
         .bind("display", newOption.display)
         .bind("description", newOption.description)
         .bind("cost", newOption.cost)
-        .map(existingOptionMapper)
-        .firstOrNull()
+        .execute()
     }
   }
 
   private val getOptionsByTypeStatement =
     """
-        SELECT type, display, description, cost
+        SELECT type, name, display, description, cost
         FROM madres.options
         WHERE type = :type;
     """.trimIndent()
@@ -46,14 +44,15 @@ class OptionRepository(
   private val existingOptionMapper =
     RowMapper { rs, _ ->
       val type = Option.Type.valueOf(rs.getString("type"))
+      val name = rs.getString("name")
       val display = rs.getString("display")
       val description = rs.getString("description")
       val cost = rs.getDouble("cost")
       when (type) {
-        Option.Type.APPETIZER -> Option.Appetizer(display, description, cost)
-        Option.Type.BEVERAGE -> Option.Beverage(display, description, cost)
-        Option.Type.ENTREE -> Option.Entree(display, description, cost)
-        Option.Type.MODIFIER -> Option.Modifier(display, description, cost)
+        Option.Type.APPETIZER -> Option.Appetizer(name, display, description, cost)
+        Option.Type.BEVERAGE -> Option.Beverage(name, display, description, cost)
+        Option.Type.ENTREE -> Option.Entree(name, display, description, cost)
+        Option.Type.MODIFIER -> Option.Modifier(name, display, description, cost)
       }
     }
 }
