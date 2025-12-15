@@ -8,6 +8,7 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import madres.backend.health.healthRoutes
 import madres.backend.inquiry.InquiryRepository
 import madres.backend.inquiry.inquiryRoutes
+import madres.backend.options.OptionRepository
 import madres.backend.options.menuOptionRoutes
 import org.http4k.core.then
 import org.http4k.filter.ServerFilters
@@ -42,6 +43,7 @@ fun main() {
     }
   val jdbi = Jdbi.create(ds).apply { installPlugins() }
   val inquiryRepository = InquiryRepository(jdbi)
+  val optionRepository = OptionRepository(jdbi)
 
   val publicRoutes =
     routes(
@@ -52,7 +54,7 @@ fun main() {
     run {
       val routes =
         routes(
-          menuOptionRoutes(),
+          menuOptionRoutes(optionRepository),
           inquiryRoutes(inquiryRepository),
         )
       if (config.auth?.token.isNullOrBlank()) {
