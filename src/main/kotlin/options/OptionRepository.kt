@@ -9,10 +9,10 @@ class OptionRepository(
   private val insertStatement =
     """
             INSERT INTO madres.options (
-            type, display, description, cost
+            type, name, display, description, cost
         )
         VALUES (
-            :type, :display, :description, :cost
+            :type, :name, :display, :description, :cost
         );
     """.trimIndent()
 
@@ -20,6 +20,7 @@ class OptionRepository(
     jdbi.withHandle<Unit, Exception> { handle ->
       handle.createUpdate(insertStatement)
         .bind("type", newOption.type)
+        .bind("name", newOption.name)
         .bind("display", newOption.display)
         .bind("description", newOption.description)
         .bind("cost", newOption.cost)
