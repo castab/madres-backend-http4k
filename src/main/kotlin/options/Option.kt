@@ -10,11 +10,11 @@ sealed class Option(
   open val description: String,
   open val cost: Double,
 ) {
-  enum class Type {
-    APPETIZER,
-    BEVERAGE,
-    ENTREE,
-    MODIFIER,
+  enum class Type(val display: String, val plural: String) {
+    APPETIZER("Appetizer", "Appetizers"),
+    BEVERAGE("Beverage", "Beverages"),
+    ENTREE("Entree", "Entrees"),
+    MODIFIER("Modifier", "Modifiers"),
   }
 
   data class Appetizer(

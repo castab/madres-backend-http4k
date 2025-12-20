@@ -10,6 +10,12 @@ import org.http4k.routing.routes
 import java.time.Duration
 
 fun menuOptionRoutes(repository: OptionRepository): RoutingHttpHandler {
+  data class Type(
+    val name: String,
+    val display: String,
+    val plural: String,
+  )
+
   val cacheFilter =
     CachingFilters.CacheResponse.MaxAge(
       maxAge = Duration.ofHours(1),
@@ -17,7 +23,9 @@ fun menuOptionRoutes(repository: OptionRepository): RoutingHttpHandler {
 
   val optionTypes =
     "/options" bind Method.GET to cacheFilter.then{
-      Option.Type.entries.map{ it.name }.toJsonResponse()
+      Option.Type.entries.map{
+        Type(it.name, it.display, it.plural)
+      }.toJsonResponse()
     }
 
   val optionTypeRoutes = Option.Type.entries.map { type ->
