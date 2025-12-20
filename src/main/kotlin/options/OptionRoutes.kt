@@ -15,12 +15,17 @@ fun menuOptionRoutes(repository: OptionRepository): RoutingHttpHandler {
       maxAge = Duration.ofHours(1),
     )
 
-  val optionRoutes = Option.Type.entries.map { type ->
+  val optionTypes =
+    "/options" bind Method.GET to cacheFilter.then{
+      Option.Type.entries.map{ it.name }.toJsonResponse()
+    }
+
+  val optionTypeRoutes = Option.Type.entries.map { type ->
     "/options/${type.name.lowercase()}" bind Method.GET to
       cacheFilter.then {
         repository.getOptionsByType(type).toJsonResponse()
       }
   }
 
-  return routes(optionRoutes)
+  return routes(optionTypeRoutes + optionTypes)
 }
