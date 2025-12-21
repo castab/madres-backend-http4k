@@ -1,9 +1,6 @@
 package madres.backend.options
 
-import com.fasterxml.jackson.annotation.JsonIgnore
-
 sealed class Option(
-  @JsonIgnore
   val type: Type,
   open val name: String,
   open val display: String,
