@@ -7,6 +7,7 @@ sealed class Option(
   open val display: String,
   open val description: String,
   open val price: Double,
+  open val active: Boolean,
 ) {
   enum class Type(val display: String, val plural: String) {
     APPETIZER("Appetizer", "Appetizers"),
@@ -24,21 +25,24 @@ sealed class Option(
     override val display: String,
     override val description: String,
     override val price: Double,
-  ) : Option(Type.APPETIZER, PricingBasis.PER_GUEST, name, display, description, price)
+    override val active: Boolean,
+  ) : Option(Type.APPETIZER, PricingBasis.PER_GUEST, name, display, description, price, active)
 
   data class Beverage(
     override val name: String,
     override val display: String,
     override val description: String,
     override val price: Double,
-  ) : Option(Type.BEVERAGE,  PricingBasis.PER_GUEST, name, display, description, price)
+    override val active: Boolean,
+    ) : Option(Type.BEVERAGE,  PricingBasis.PER_GUEST, name, display, description, price, active)
 
   data class Entree(
     override val name: String,
     override val display: String,
     override val description: String,
     override val price: Double,
-  ) : Option(Type.ENTREE, PricingBasis.PER_GUEST, name, display, description, price)
+    override val active: Boolean,
+    ) : Option(Type.ENTREE, PricingBasis.PER_GUEST, name, display, description, price, active)
 
   data class Modifier(
     override val pricingBasis: PricingBasis,
@@ -46,5 +50,6 @@ sealed class Option(
     override val display: String,
     override val description: String,
     override val price: Double,
-  ) : Option(Type.MODIFIER, pricingBasis, name, display, description, price)
+    override val active: Boolean,
+    ) : Option(Type.MODIFIER, pricingBasis, name, display, description, price, active)
 }

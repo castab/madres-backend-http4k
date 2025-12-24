@@ -31,7 +31,7 @@ fun menuOptionRoutes(repository: OptionRepository): RoutingHttpHandler {
   val optionTypeRoutes = Option.Type.entries.map { type ->
     "/options/${type.name.lowercase()}" bind Method.GET to
       cacheFilter.then {
-        repository.getOptionsByType(type).toJsonResponse()
+        repository.getActiveOptionsByType(type).toJsonResponse()
       }
   }
 
