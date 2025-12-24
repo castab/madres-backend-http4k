@@ -9,10 +9,10 @@ class OptionRepository(
   private val insertStatement =
     """
             INSERT INTO madres.options (
-            type, name, display, description, cost
+            type, pricing_basis, name, display, description, price
         )
         VALUES (
-            :type, :name, :display, :description, :cost
+            :type, :pricingBasis, :name, :display, :description, :price
         );
     """.trimIndent()
 
@@ -20,17 +20,18 @@ class OptionRepository(
     jdbi.withHandle<Unit, Exception> { handle ->
       handle.createUpdate(insertStatement)
         .bind("type", newOption.type)
+        .bind("pricingBasis", newOption.pricingBasis)
         .bind("name", newOption.name)
         .bind("display", newOption.display)
         .bind("description", newOption.description)
-        .bind("cost", newOption.cost)
+        .bind("price", newOption.price)
         .execute()
     }
   }
 
   private val getOptionsByTypeStatement =
     """
-        SELECT type, name, display, description, cost
+        SELECT type, pricing_basis, name, display, description, price
         FROM madres.options
         WHERE type = :type;
     """.trimIndent()
@@ -45,15 +46,16 @@ class OptionRepository(
   private val existingOptionMapper =
     RowMapper { rs, _ ->
       val type = Option.Type.valueOf(rs.getString("type"))
+      val pricingBasis = Option.PricingBasis.valueOf(rs.getString("pricing_basis"))
       val name = rs.getString("name")
       val display = rs.getString("display")
       val description = rs.getString("description")
-      val cost = rs.getDouble("cost")
+      val price = rs.getDouble("price")
       when (type) {
-        Option.Type.APPETIZER -> Option.Appetizer(name, display, description, cost)
-        Option.Type.BEVERAGE -> Option.Beverage(name, display, description, cost)
-        Option.Type.ENTREE -> Option.Entree(name, display, description, cost)
-        Option.Type.MODIFIER -> Option.Modifier(name, display, description, cost)
+        Option.Type.APPETIZER -> Option.Appetizer(name, display, description, price)
+        Option.Type.BEVERAGE -> Option.Beverage(name, display, description, price)
+        Option.Type.ENTREE -> Option.Entree(name, display, description, price)
+        Option.Type.MODIFIER -> Option.Modifier(pricingBasis, name, display, description, price)
       }
     }
 }
