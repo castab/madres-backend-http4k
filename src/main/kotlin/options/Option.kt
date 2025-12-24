@@ -16,7 +16,7 @@ sealed class Option(
   }
 
   enum class PricingBasis {
-    PER_GUEST, PER_EVEN
+    PER_GUEST, PER_EVENT
   }
 
   data class Appetizer(
