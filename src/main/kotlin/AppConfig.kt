@@ -1,6 +1,6 @@
 package madres.backend
 
-data class Config(
+data class AppConfig(
   val auth: AuthConfig?,
   val server: ServerConfig,
   val database: DatabaseConfig,

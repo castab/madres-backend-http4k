@@ -5,6 +5,8 @@ import com.sksamuel.hoplite.PropertySource
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import io.github.oshai.kotlinlogging.KotlinLogging
+import madres.backend.configurations.ConfigurationRepository
+import madres.backend.configurations.configurationRoutes
 import madres.backend.health.healthRoutes
 import madres.backend.inquiry.InquiryRepository
 import madres.backend.inquiry.inquiryRoutes
@@ -19,24 +21,24 @@ import org.jdbi.v3.core.Jdbi
 
 fun main() {
   val log = KotlinLogging.logger("Madres Backend")
-  val config =
+  val appConfig =
     ConfigLoaderBuilder
       .default()
       .addSource(PropertySource.resource("/application.conf", true))
       .addSource(PropertySource.resource("/application-overrides.conf"))
       .addSource(PropertySource.environment())
       .build()
-      .loadConfigOrThrow<Config>()
+      .loadConfigOrThrow<AppConfig>()
 
   val ds =
     run {
       val hikariConfig =
         HikariConfig().apply {
-          jdbcUrl = config.database.jdbcUrl
-          username = config.database.username
-          password = config.database.password
-          maximumPoolSize = config.database.maximumPoolSize
-          minimumIdle = config.database.minimumIdle
+          jdbcUrl = appConfig.database.jdbcUrl
+          username = appConfig.database.username
+          password = appConfig.database.password
+          maximumPoolSize = appConfig.database.maximumPoolSize
+          minimumIdle = appConfig.database.minimumIdle
           schema = "madres"
         }
       HikariDataSource(hikariConfig)
@@ -44,6 +46,7 @@ fun main() {
   val jdbi = Jdbi.create(ds).apply { installPlugins() }
   val inquiryRepository = InquiryRepository(jdbi)
   val optionRepository = OptionRepository(jdbi)
+  val configurationRepository = ConfigurationRepository(jdbi)
 
   val publicRoutes =
     routes(
@@ -56,13 +59,14 @@ fun main() {
         routes(
           menuOptionRoutes(optionRepository),
           inquiryRoutes(inquiryRepository),
+          configurationRoutes(configurationRepository)
         )
-      if (config.auth?.token.isNullOrBlank()) {
+      if (appConfig.auth?.token.isNullOrBlank()) {
         log.warn { "No auth.token configured - authentication is DISABLED. This should not be used in production!" }
         routes
       } else {
         log.info { "Authentication enabled for protected routes" }
-        requireAuth(config.auth.token).then(routes)
+        requireAuth(appConfig.auth.token).then(routes)
       }
     }
 
@@ -74,9 +78,9 @@ fun main() {
       ),
     )
 
-  val server = allRoutes.asServer(Netty(config.server.port)).start()
+  val server = allRoutes.asServer(Netty(appConfig.server.port)).start()
 
-  log.info { "Server running on port ${config.server.port}" }
+  log.info { "Server running on port ${appConfig.server.port}" }
 
   Runtime.getRuntime().addShutdownHook(
     Thread {
