@@ -45,17 +45,6 @@ class OptionRepository(
       .toList()
   }
 
-  private val getBaseRateStatement =
-    """
-      SELECT price FROM madres.options WHERE type = 'BASE' and name = 'BASE';
-    """.trimIndent()
-
-  fun getBaseRate(): Double = jdbi.withHandle<Double, Exception> { handle ->
-    handle.createQuery(getBaseRateStatement)
-      .mapTo(Double::class.java)
-      .one()
-  }
-
   private val existingOptionMapper =
     RowMapper { rs, _ ->
       val type = Option.Type.valueOf(rs.getString("type"))

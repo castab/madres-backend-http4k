@@ -28,11 +28,6 @@ fun menuOptionRoutes(repository: OptionRepository): RoutingHttpHandler {
       }.toJsonResponse()
     }
 
-  val base =
-    "/options/base" bind Method.GET to cacheFilter.then{
-      repository.getBaseRate().toJsonResponse()
-    }
-
   val optionTypeRoutes = Option.Type.entries.map { type ->
     "/options/${type.name.lowercase()}" bind Method.GET to
       cacheFilter.then {
@@ -40,5 +35,5 @@ fun menuOptionRoutes(repository: OptionRepository): RoutingHttpHandler {
       }
   }
 
-  return routes(optionTypeRoutes + optionTypes + base)
+  return routes(optionTypeRoutes + optionTypes)
 }
