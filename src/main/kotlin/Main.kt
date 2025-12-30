@@ -5,6 +5,8 @@ import com.sksamuel.hoplite.PropertySource
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import io.github.oshai.kotlinlogging.KotlinLogging
+import madres.backend.auth.AuthRepository
+import madres.backend.auth.authRoutes
 import madres.backend.configurations.ConfigurationRepository
 import madres.backend.configurations.configurationRoutes
 import madres.backend.health.healthRoutes
@@ -47,6 +49,7 @@ fun main() {
   val inquiryRepository = InquiryRepository(jdbi)
   val optionRepository = OptionRepository(jdbi)
   val configurationRepository = ConfigurationRepository(jdbi)
+  val authRepository = AuthRepository(jdbi)
 
   val publicRoutes =
     routes(
@@ -59,7 +62,8 @@ fun main() {
         routes(
           menuOptionRoutes(optionRepository),
           inquiryRoutes(inquiryRepository),
-          configurationRoutes(configurationRepository)
+          configurationRoutes(configurationRepository),
+          authRoutes(authRepository)
         )
       if (appConfig.auth?.token.isNullOrBlank()) {
         log.warn { "No auth.token configured - authentication is DISABLED. This should not be used in production!" }
