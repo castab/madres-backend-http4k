@@ -1,5 +1,5 @@
 # Dockerfile
-FROM gradle:8.13-jdk21 AS build
+FROM gradle:9.1.0-jdk-25 AS build
 
 WORKDIR /app
 
@@ -17,7 +17,7 @@ COPY src ./src
 RUN gradle shadowJar --no-daemon
 
 # Runtime stage
-FROM eclipse-temurin:21-jre-alpine
+FROM eclipse-temurin:25-jre-alpine
 
 WORKDIR /app
 

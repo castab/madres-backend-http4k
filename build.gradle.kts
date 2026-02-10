@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm") version "2.2.21"
+    kotlin("jvm") version "2.3.10"
     id("com.gradleup.shadow") version "9.2.2"
     id("com.diffplug.spotless") version "8.1.0"
     application
@@ -56,7 +56,7 @@ tasks.shadowJar {
 }
 
 kotlin {
-    jvmToolchain(21)
+    jvmToolchain(25)
 }
 
 configure<com.diffplug.gradle.spotless.SpotlessExtension> {
